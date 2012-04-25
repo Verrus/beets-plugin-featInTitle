@@ -1,0 +1,29 @@
+## http://github.com/Verrus/beets-plugin-featInTitle/
+## The plugin removes featuring artists from the artist field in the ID3 tag.
+## the featuring artist is appended to the trackname field.
+##
+## practical use: Cleans up the arist field , so filtering per main artist is possible again.
+##
+## Suitable for version:
+## Tested on beets version 1.0b11
+
+## preparation:
+The following code needs to be placed inside the "__init_.py" file (create one if not present in ~/beets-1.0b11/beetsplug):
+
+from pkgutil import extend_path
+__path__ = extend_path(__path__, __name__)
+
+ The code is probably there if you have other plugins installed.
+
+## Plugin location:
+this plugin can be placed inside the plugings directory of beets.
+~/beets-1.0b11/beetsplug/ftInTitle.py
+
+
+## Installation:
+mv ./ftInTitle.py ~/beets-1.0b11/beetsplug/ftInTitle.py
+optional : create or update the __init__.py file with the code listed above.
+python setup.py install  //for compilation of the plugin into beets
+beet ftintitle // run plugin
+beet update // should be run after the plugin in order to update the beets database.
+
