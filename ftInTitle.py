@@ -45,11 +45,11 @@ class ftInTitle(BeetsPlugin):
 	      featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.', titleField)
 	      if featInTitle==None:
 		print track.__getattr__("path")
-		track.__setattr__("artist", regxRes[0])
-		track.__setattr__("title", titleField + " feat." + regxRes[1])
+		track.__setattr__("artist", regxRes[0].strip())
+		track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
 		track.write()
 	      else:
-		track.__setattr__("artist", regxRes[0])	      
+		track.__setattr__("artist", regxRes[0].strip())
 		track.write()
 	  print "A Manual 'beet update' run is recommended. "
         cmd.func = func
