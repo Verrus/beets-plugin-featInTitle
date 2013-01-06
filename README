@@ -23,6 +23,7 @@ this plugin can be placed inside the plugings directory of beets.
 ## Installation:
 mv ./ftInTitle.py ~/beets-1.0b11/beetsplug/ftInTitle.py
 optional : create or update the __init__.py file with the code listed above.
+nano ~/.beetsconfig // and add to the plugins line ftInTitle -> plugins: ftInTitle (space separated)
 python setup.py install  //for compilation of the plugin into beets
 beet ftintitle // run plugin
 beet update // should be run after the plugin in order to update the beets database.
