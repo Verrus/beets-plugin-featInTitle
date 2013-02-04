@@ -39,16 +39,17 @@ class ftInTitle(BeetsPlugin):
         def func(lib, config, opts, args):
 	  for track in lib.items():
 	    artistfield  = track.__getattr__("artist")
-	    regxRes = re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith', artistfield)
+	    regxRes = re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield)
 	    if len(regxRes)>1:
 	      titleField = track.__getattr__("title")
-	      featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.', titleField)
-	      if featInTitle==None:
+	      featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
+	      if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
 		print track.__getattr__("path")
 		track.__setattr__("artist", regxRes[0].strip())
 		track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
 		track.write()
-	      else:
+	       elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
+		print track.__getattr__("path")
 		track.__setattr__("artist", regxRes[0].strip())
 		track.write()
 	  print "A Manual 'beet update' run is recommended. "
