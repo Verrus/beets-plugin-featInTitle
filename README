@@ -5,7 +5,7 @@
 ## practical use: Cleans up the arist field , so filtering per main artist is possible again.
 ##
 ## Suitable for version:
-## Tested on beets version 1.0b11
+## Tested on beets version 1.1.0-beta.3
 
 ## preparation:
 The following code needs to be placed inside the "__init_.py" file (create one if not present in ~/beets-1.0b11/beetsplug):
@@ -17,14 +17,14 @@ __path__ = extend_path(__path__, __name__)
 
 ## Plugin location:
 this plugin can be placed inside the plugings directory of beets.
-~/beets-1.0b11/beetsplug/ftInTitle.py
+~/beets/beetsplug/ftInTitle.py
 
 
 ## Installation:
-mv ./ftInTitle.py ~/beets-1.0b11/beetsplug/ftInTitle.py
+mv ./ftInTitle.py ~/beets/beetsplug/ftInTitle.py
 optional : create or update the __init__.py file with the code listed above.
-nano ~/.beetsconfig // and add to the plugins line ftInTitle -> plugins = ftInTitle (space separated)
-python setup.py install  //for compilation of the plugin into beets
+nano ~/.config/beets/config.yaml and add to the plugins line ftInTitle -> plugins: ftInTitle (space separated)
+sudo python setup.py install  //for compilation of the plugin into beets
 beet ftintitle // run plugin
 beet update // should be run after the plugin in order to update the beets database.
 
