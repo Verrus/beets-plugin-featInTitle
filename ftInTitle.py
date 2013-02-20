@@ -34,26 +34,25 @@ import re
 
 
 class ftInTitle(BeetsPlugin):
-    def commands(self):
-        cmd = ui.Subcommand('ftintitle', help='puts featuring artists in the title instead of the artist field')
-        def func(lib, config, opts, args):
-	  for track in lib.items():
-	    artistfield  = track.__getattr__("artist")
-	    regxRes = re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield)
-	    if len(regxRes)>1:
-	      titleField = track.__getattr__("title")
-	      featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
-	      if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
-		print track.__getattr__("path")
-		track.__setattr__("artist", regxRes[0].strip())
-		track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
-		track.write()
-	       elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
-		print track.__getattr__("path")
-		track.__setattr__("artist", regxRes[0].strip())
-		track.write()
-	  print "A Manual 'beet update' run is recommended. "
-        cmd.func = func
-        
-        return [cmd]
+	def commands(self):
+		cmd = ui.Subcommand('ftintitle', help='puts featuring artists in the title instead of the artist field')
+		def func(lib, opts, args):
+			for track in lib.items():
+				artistfield  = track.__getattr__("artist")
+				regxRes = re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield)
+				if len(regxRes)>1:
+					titleField = track.__getattr__("title")
+					featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
+					if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
+						print track.__getattr__("path")
+						track.__setattr__("artist", regxRes[0].strip())
+						track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
+						track.write()
+					elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
+						print track.__getattr__("path")
+						track.__setattr__("artist", regxRes[0].strip())
+						track.write()
+			print "A Manual 'beet update' run is recommended. "
+		cmd.func = func
+		return [cmd]
         
