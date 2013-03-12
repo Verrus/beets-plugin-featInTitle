@@ -43,12 +43,13 @@ class ftInTitle(BeetsPlugin):
 				if len(regxRes)>1:
 					titleField = track.__getattr__("title")
 					featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
-					if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
+					pathInTitle = track.__getattr__("path")
+					if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip() and pathInTitle:
 						print track.__getattr__("path")
 						track.__setattr__("artist", regxRes[0].strip())
 						track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
 						track.write()
-					elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip():
+					elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip() and pathInTitle:
 						print track.__getattr__("path")
 						track.__setattr__("artist", regxRes[0].strip())
 						track.write()
