@@ -30,29 +30,74 @@
 from beets.plugins import BeetsPlugin
 from beets import library
 from beets import ui
+import locale
 import re
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8") # fixes encoding issues using a pipe
+
+
 
 
 class ftInTitle(BeetsPlugin):
 	def commands(self):
 		cmd = ui.Subcommand('ftintitle', help='puts featuring artists in the title instead of the artist field')
 		def func(lib, opts, args):
+		
+			def findSupplementaryArtists(artistfield):
+				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield,1) #only split on the first.
+			def DetectIfFeaturingArtistAlreadyInTitle(titleField):
+				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
+			# feat is already in title only replace artistfield
+			def writeArtistFieldOnlyAndPrintEditedFileLoc(track,albumArtist):
+				print track.__getattr__("path")
+				print "new artist field",albumArtist.strip()
+				track.__setattr__("artist", albumArtist)
+				track.write()
+			# write a new title and a new artistfield.
+			def writeArtistAndTitleFieldAndPrintEditedFileLoc(track,albumArtist,titleField,featuringPartofArtistField):
+				print track.__getattr__("path")
+				print "albumartist:",albumArtist," title:",titleField," featuartist:",featuringPartofArtistField
+				track.__setattr__("artist", albumArtist)
+				track.__setattr__("title", titleField.strip() + " feat." + featuringPartofArtistField)
+				track.write()
+			# split the extended artistfield in the extended part and albumartist
+			def splitOnAlbumArtist(albumArtist,artistfield):
+				return re.split(albumArtist, artistfield)
+			#checks if title has a feat artist and calls the writing methods accordingly
+			def chooseWritingOfTitleAndWrite(track,albumArtist,titleField,featuringPartofArtistField):
+				if len(DetectIfFeaturingArtistAlreadyInTitle(titleField))>1: #if already in title only replace the artist field.
+					#no replace title
+					writeArtistFieldOnlyAndPrintEditedFileLoc(track,albumArtist)
+				else:
+					#do replace title.
+					writeArtistAndTitleFieldAndPrintEditedFileLoc(track,albumArtist,titleField,featuringPartofArtistField)
+			
 			for track in lib.items():
-				artistfield  = track.__getattr__("artist")
-				regxRes = re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield)
-				if len(regxRes)>1:
-					titleField = track.__getattr__("title")
-					featInTitle = re.search('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
-					pathInTitle = track.__getattr__("path")
-					if featInTitle==None and regxRes[0].strip()==track.__getattr__("albumartist").strip() and pathInTitle:
+				artistfield  = track.__getattr__("artist").strip()
+				titleField = track.__getattr__("title").strip()
+				albumArtist = track.__getattr__("albumartist").strip()
+				suppArtistsSplit = findSupplementaryArtists(artistfield)
+				if len(suppArtistsSplit)>1 and albumArtist!=artistfield: # found supplementary artist. and the albumArtist is not a perfect match.
+					albumArtistSplit = splitOnAlbumArtist(albumArtist,artistfield) 
+					
+					if len(albumArtistSplit)>1 and albumArtistSplit[-1]!='': # check if the artist field is composed of the albumartist.  AND check if the last element of the split is not empty.
+						featuringPartofArtistField = findSupplementaryArtists(albumArtistSplit[-1])[-1] #last elements
+						chooseWritingOfTitleAndWrite(track,albumArtist,titleField,featuringPartofArtistField)
+							
+					elif len(albumArtistSplit)>1 and len(findSupplementaryArtists(albumArtistSplit[0]))>1: #check for inversion of artist and featuring ; if feat is listed on the first split.
+						featuringPartofArtistField = findSupplementaryArtists(albumArtistSplit[0])[0] #first elements because of inversion
+						chooseWritingOfTitleAndWrite(track,albumArtist,titleField,featuringPartofArtistField)
+									
+					else:
+						print "#############################"
+						print "ftInTitle has not touched this track, unsure what to do with this one.:"
+						print "artistfield: ",artistfield
+						print "albumArtist",albumArtist
+						print "titleField: ",titleField
 						print track.__getattr__("path")
-						track.__setattr__("artist", regxRes[0].strip())
-						track.__setattr__("title", titleField.strip() + " feat." + regxRes[1])
-						track.write()
-					elif featInTitle!=None and regxRes[0].strip()==track.__getattr__("albumartist").strip() and pathInTitle:
-						print track.__getattr__("path")
-						track.__setattr__("artist", regxRes[0].strip())
-						track.write()
+						print "#############################"
+
 			print "A Manual 'beet update' run is recommended. "
 		cmd.func = func
 		return [cmd]
