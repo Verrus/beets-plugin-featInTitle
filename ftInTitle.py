@@ -45,7 +45,7 @@ class ftInTitle(BeetsPlugin):
 		def func(lib, opts, args):
 		
 			def findSupplementaryArtists(artistfield):
-				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', artistfield,1) #only split on the first.
+				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&|vs\.|and', artistfield,1) #only split on the first.
 			def DetectIfFeaturingArtistAlreadyInTitle(titleField):
 				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
 			# feat is already in title only replace artistfield
