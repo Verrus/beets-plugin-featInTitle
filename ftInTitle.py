@@ -1,4 +1,4 @@
-#Copyright (c) <2012>, <github.com/Verrus/beets-plugin-featInTitle>
+#Copyright (c) <2013> Verrus, <github.com/Verrus/beets-plugin-featInTitle>
 #All rights reserved.
 ## New BSD License:
 #Redistribution and use in source and binary forms, with or without
