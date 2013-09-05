@@ -45,9 +45,9 @@ class ftInTitle(BeetsPlugin):
 		def func(lib, opts, args):
 		
 			def findSupplementaryArtists(artistfield):
-				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&|vs\.|and', artistfield,1) #only split on the first.
+				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|\b[wW]ith\b|&|vs\.|and', artistfield,1) #only split on the first.
 			def DetectIfFeaturingArtistAlreadyInTitle(titleField):
-				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|[wW]ith|&', titleField)
+				return re.split('[fF]t\.|[fF]eaturing|[fF]eat\.|\b[wW]ith\b|&', titleField)
 			# feat is already in title only replace artistfield
 			def writeArtistFieldOnlyAndPrintEditedFileLoc(track,albumArtist,sortArtist):
 				print track.__getattr__("path")
